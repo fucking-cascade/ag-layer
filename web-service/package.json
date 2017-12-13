@@ -1,0 +1,31 @@
+{
+  "name": "web-service",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "redis": "docker run -d -p 6379:6379 redis:alpine",
+    "clean-docker": "docker stop $(docker ps -q)",
+    "dev": "npm run clean-docker && npm run redis && nodemon --harmony ./server/app.js",
+    "server": "node --harmony ./server/app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "monkingxue",
+  "license": "MIT",
+  "dependencies": {
+    "apollo-server-koa": "^1.3.0",
+    "graphql": "^0.11.7",
+    "graphql-schema-tools": "0.0.6",
+    "koa": "^2.4.1",
+    "koa-bodyparser": "^4.2.0",
+    "koa-convert": "^1.2.0",
+    "koa-cors": "0.0.16",
+    "koa-logger": "^3.1.0",
+    "koa-redis": "^3.1.1",
+    "koa-router": "^7.3.0",
+    "koa-session-minimal": "^3.0.4"
+  },
+  "devDependencies": {
+    "nodemon": "^1.12.6"
+  }
+}
