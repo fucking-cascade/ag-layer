@@ -24,14 +24,14 @@ console.log(`craete redis in ${config.redis.host}: ${config.redis.port}`)
 
 app.use(convert(cors()))
 
-// app.use(session(sessionConfig))
-// app.use((ctx, next) => {
-//   if ('/favicon.ico' === ctx.path) return
-//
-//   const count = ctx.session.count || 0
-//   ctx.session.count = count + 1
-//   return next()
-// })
+app.use(session(sessionConfig))
+app.use((ctx, next) => {
+  if ('/favicon.ico' === ctx.path) return
+
+  const count = ctx.session.count || 0
+  ctx.session.count = count + 1
+  return next()
+})
 
 app.use(logger())
 
