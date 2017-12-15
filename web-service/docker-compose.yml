@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+  graph-koa:
+    build: ./
+    command: npm run server
+    depends_on:
+      - redis
+    environment:
+      - PORT=3001
+      - REDIS_HOST='redis'
+    ports:
+      - '3001:3001'
+    networks:
+      - front-tier
+
+  redis:
+    image: redis:alpine
+    container_name: redis
+    ports: ["6379"]
+    networks:
+      - front-tier
+
+networks:
+  front-tier:

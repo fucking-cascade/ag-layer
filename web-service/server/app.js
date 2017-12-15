@@ -20,16 +20,18 @@ const sessionConfig = {
   store: new redis(config.redis)
 }
 
+console.log(`craete redis in ${config.redis.host}: ${config.redis.port}`)
+
 app.use(convert(cors()))
 
-app.use(session(sessionConfig))
-app.use((ctx, next) => {
-  if ('/favicon.ico' === ctx.path) return
-
-  const count = ctx.session.count || 0
-  ctx.session.count = count + 1
-  return next()
-})
+// app.use(session(sessionConfig))
+// app.use((ctx, next) => {
+//   if ('/favicon.ico' === ctx.path) return
+//
+//   const count = ctx.session.count || 0
+//   ctx.session.count = count + 1
+//   return next()
+// })
 
 app.use(logger())
 
@@ -40,8 +42,7 @@ router.get(graphqlRoute, graphqlKoa({schema}))
 
 router.get(graphiqlRoute, graphiqlKoa({endpointURL: graphqlRoute}))
 
-app.use(router.routes())
-app.use(router.allowedMethods())
+app.use(router.routes()).use(router.allowedMethods())
 
 app.listen(config.port)
 console.log(`the server is start at port ${config.port}`)

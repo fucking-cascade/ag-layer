@@ -3,23 +3,21 @@
  */
 
 // fake data
-const users = [
-  {
-    id: '1',
-    sex: 'male',
-    name: 'miro'
-  },
-  {
-    id: '2',
-    sex: 'female',
-    name: 'lala'
-  },
-  {
-    id: '3',
-    sex: 'male',
-    name: 'joe'
-  }
-]
+
+const casual = require('casual')
+
+casual.define('user', () => {
+  return {
+    id: casual.uuid,
+    email: casual.email,
+    name: casual.name,
+    sex: casual.random_element(['male', 'female', 'other']),
+    phoneNumber: casual.phone,
+    address: casual.address
+  };
+});
+
+const users = new Array(100).fill(1).map(() => casual.user)
 
 const tools = {
   findUser (users, id) {
@@ -38,6 +36,9 @@ const typeDefine = `
     name: String
     id: String
     sex: String
+    email: String
+    phoneNumber: String
+    address: String
     matches: [User]
   }
 
@@ -59,15 +60,15 @@ const resolver = {
     }
   },
   Query: {
-    getUser(root, {id}, ctx) {
-      return tools.findUser(users, id);
+    getUser (root, {id}, ctx) {
+      return tools.findUser(users, id)
     },
-    users(root, args, ctx) {
+    users (root, args, ctx) {
       return users
     }
   },
   Mutation: {
-    addUser(root, {name, sex}, ctx) {
+    addUser (root, {name, sex}, ctx) {
       return tools.addUser(users, {name, sex, id: Math.random().toString(16).substr(2)})
     }
   }
