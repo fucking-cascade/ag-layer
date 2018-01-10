@@ -1,4 +1,5 @@
 *
 !server/
+!utils/
 !*.js
 !*.json

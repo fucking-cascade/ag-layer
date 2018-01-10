@@ -12,7 +12,7 @@ RUN set -ex \
            python \
            make \
            g++ \
-	&& npm install --registry=https://registry.npm.taobao.org --production\
+	&& npm install --registry=https://registry.npm.taobao.org --production \
 	&& apk del .gyp \
 	&& mkdir -p /home/app \
 	&& cp -a /tmp/node_modules /home/app/ \
@@ -22,7 +22,6 @@ WORKDIR /home/app
 
 ADD . /home/app
 
-ENV PORT=3001
 EXPOSE 3001
 
 CMD ["npm", "run", "server"]

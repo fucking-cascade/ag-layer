@@ -1,13 +1,13 @@
 /**
  * Created by xueyingchen.
  */
-const {PORT, REDIS_HOST, REDIS_PORT} = process.env
+const { PORT } = process.env
 
 const config = {
   port: PORT || 3001,
-  redis: {
-    host: REDIS_HOST || '127.0.0.1',
-    port: REDIS_PORT || 6379
+  redisConfig: {
+    sentinels: [{ host: 'redis-sentinel', port: 26379 }],
+    name: 'mymaster'
   },
   sessionKey: 'yy:id',
   cookie: {
@@ -15,7 +15,7 @@ const config = {
     overwrite: true,
     httpOnly: true,
     signed: true,
-    rolling: false,
+    rolling: false
   },
   graphqlRoute: '/graphql',
   graphiqlRoute: '/graphiql'
