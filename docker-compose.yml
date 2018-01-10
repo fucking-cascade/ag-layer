@@ -1,0 +1,34 @@
+version: '3'
+services:
+  graph-koa:
+    build: web-service
+    depends_on:
+      - redis-master
+    environment:
+      - PORT=3001
+    ports:
+      - '3001:3001'
+    networks:
+      - redis
+  redis-master:
+    image: 'redis:alpine'
+    networks:
+      - redis
+  redis-slave:
+    image: 'redis:alpine'
+    command: redis-server --slaveof redis-master 6379
+    depends_on:
+      - redis-master
+    networks:
+      - redis
+  redis-sentinel:
+    build: sentinel
+    depends_on:
+      - redis-master
+    environment:
+      - SENTINEL_DOWN_AFTER=5000
+      - SENTINEL_FAILOVER=5000
+    networks:
+      - redis
+networks:
+  redis: null
