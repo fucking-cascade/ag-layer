@@ -21,28 +21,28 @@ const schema = require('./modules')
 const app = new Koa()
 const router = new Router()
 
-// const sessionConfig = {
-//   key: sessionKey,
-//   store: new RedisStore(redisConfig),
-//   ...cookie
-// }
+const sessionConfig = {
+  key: sessionKey,
+  store: new RedisStore(redisConfig),
+  ...cookie
+}
 
 app.use(convert(cors()))
 
-// app.keys = ['keys']
-// app.use(session(sessionConfig, app))
+app.keys = ['keys']
+app.use(session(sessionConfig, app))
 app.use(async (ctx, next) => {
   if ('/favicon.ico' === ctx.path) return
 
   await new Promise(resolve => {
-    setTimeout(resolve, 1000)
+    setTimeout(resolve, 2000)
   })
-  // if (!ctx.session.hasLogin) {
-  //   ctx.session.hasLogin = true
-  //   console.log('You need to login')
-  // } else {
-  //   console.log('Have logined')
-  // }
+  if (!ctx.session.hasLogin) {
+    ctx.session.hasLogin = true
+    console.log('You need to login')
+  } else {
+    console.log('Have logined')
+  }
 
   await next()
 })

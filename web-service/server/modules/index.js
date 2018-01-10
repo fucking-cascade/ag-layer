@@ -3,7 +3,7 @@
  */
 const {makeExecutableSchema} = require('graphql-schema-tools')
 
-const {getDirModules} = require('../../utils')
+const {getDirModules} = require('../../utils/common')
 
 const mainDefines = [`
   schema {

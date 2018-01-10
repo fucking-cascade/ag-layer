@@ -1,0 +1,85 @@
+version: "3"
+
+services:
+  graph-koa:
+    image: monkingxue/graph-koa:latest
+    depends_on:
+      - redis-master
+    environment:
+      - PORT=3001
+    ports:
+      - '3001:3001'
+    networks:
+      - front-tier
+    deploy:
+      replicas: 4
+      update_config:
+        parallelism: 2
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == worker]
+
+  redis-master:
+    image: 'redis:alpine'
+    networks:
+      - front-tier
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == manager]
+
+  redis-slave:
+      image: 'redis:alpine'
+      command: redis-server --slaveof redis-master 6379
+      depends_on:
+        - redis-master
+      networks:
+        - front-tier
+      deploy:
+        replicas: 3
+        update_config:
+          parallelism: 2
+          delay: 10s
+        restart_policy:
+          condition: on-failure
+        placement:
+          constraints: [node.role == worker]
+
+  redis-sentinel:
+    image: monkingxue/sentinel:latest
+    depends_on:
+      - redis-master
+    environment:
+      - SENTINEL_DOWN_AFTER=5000
+      - SENTINEL_FAILOVER=5000
+    networks:
+        - front-tier
+    deploy:
+        replicas: 2
+        update_config:
+          parallelism: 2
+          delay: 10s
+        restart_policy:
+          condition: on-failure
+        placement:
+          constraints: [node.role == worker]
+
+  visualizer:
+      image: dockersamples/visualizer:stable
+      ports:
+        - '8080:8080'
+      stop_grace_period: 1m30s
+      volumes:
+        - '/var/run/docker.sock:/var/run/docker.sock'
+      deploy:
+        placement:
+          constraints: [node.role == manager]
+
+networks:
+  front-tier: null
